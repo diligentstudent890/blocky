@@ -12,16 +12,19 @@ public class BlockyGame {
     
     private int lockCounter;
     
+    private RandomPieceGenerator randomGenerator;
     public BlockyGame() {
         board = new Board();
         movement = Direction.NONE;
         lockCounter = 0;
+        randomGenerator = new RandomPieceGenerator();
         trySpawnBlock();
     }
     
     private void trySpawnBlock() {
         if (activePiece == null) {
-            activePiece = new Piece(PieceKind.I, new Position(Constants.BOARD_HEIGHT - 1, Constants.BOARD_WIDTH / 2 - 2));
+            activePiece = new Piece(randomGenerator.getNextPieceKind(),
+                                new Position(Constants.BOARD_HEIGHT - 1, Constants.BOARD_WIDTH / 2 - 2));
             if (board.collides(activePiece)) {
                 System.exit(0);
             }
@@ -39,6 +42,7 @@ public class BlockyGame {
             break;
         case RIGHT:
             nextPos = activePiece.getPosition().add(0, 1);
+            break;
         default:
             throw new IllegalStateException("Unrecognized direction: " + movement.name());
         }
