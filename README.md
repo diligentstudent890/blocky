@@ -4,7 +4,7 @@ _(Gamewerks corporation internal code—do not share!)_
 
 ## Credits
 
-Primary developer: _(TODO: fill me in)_
+Primary developer: _(Brian He)_
 
 ### Resources Used
 
