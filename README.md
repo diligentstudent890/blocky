@@ -9,13 +9,18 @@ Primary developer: _(Brian He)_
 ### Resources Used
 
 + https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
-+ ...
-+ ...
++ ... NetBeans IDE 24
++ ... Java JDK 23
 
 ## Changelog
 
-~~~console
-commit f816fc10852587fd9bd10892ebaa8b1de0720128 (HEAD -> main)
+commit dc253cfd130ff79d8c9dd0e61619131fde864b22 (HEAD -> main, origin/main, origin/HEAD)
+Author: Brian He <brianhe@Brians-MacBook-Air.local>
+Date:   Wed Mar 5 23:15:39 2025 -0600
+
+    final version
+
+commit f816fc10852587fd9bd10892ebaa8b1de0720128
 Author: Brian He <brianhe@Brians-MacBook-Air.local>
 Date:   Wed Feb 12 19:13:57 2025 -0600
 
@@ -45,7 +50,7 @@ Date:   Wed Feb 12 01:14:02 2025 -0600
 
     Added missing break in processMovement() switch-case for RIGHT
 
-commit afe5fb01903e400af8fa786f1a8c10dfa900169f (origin/main, origin/HEAD)
+commit afe5fb01903e400af8fa786f1a8c10dfa900169f
 Author: Peter-Michael Osera <osera@cs.grinnell.edu>
 Date:   Wed Feb 5 20:51:21 2025 -0600
 
