@@ -1,17 +1,30 @@
 package com.gamewerks.blocky.util;
 
 public class Position {
-    public int row;
-    public int col;
+    private int row;
+    private int col;
     
     public Position(int row, int col) {
         this.row = row;
         this.col = col;
     }
     
-    public Position add(int row, int col) {
-        return new Position(this.row + row, this.col + col);
+    public int getRow() {
+        return row;
     }
     
-    public String toString() { return String.format("(row = %d, col = %d)", row, col); } 
+    public int getCol() {
+        return col;
+    }
+    
+    // Returns a new Position with updated row and column.
+    public Position add(int deltaRow, int deltaCol) {
+        return new Position(this.row + deltaRow, this.col + deltaCol);
+    }
+    
+    // Optionally, update the position in place.
+    public void set(int row, int col) {
+        this.row = row;
+        this.col = col;
+    }
 }

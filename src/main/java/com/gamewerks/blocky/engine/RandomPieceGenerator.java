@@ -1,39 +1,39 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.gamewerks.blocky.engine;
 
-/**
- *
- * @author brianhe
- */
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class RandomPieceGenerator {
-    private PieceKind[] bag;
-    private int currentIndex;
+    private List<PieceKind> bag;
+    private int index;
+    private Random random;
     
     public RandomPieceGenerator() {
-        bag = new PieceKind[PieceKind.ALL.length];
-        System.arraycopy(PieceKind.ALL, 0, bag, 0, PieceKind.ALL.length);
-        shuffleBag();
-        currentIndex = 0;
+        random = new Random();
+        refillBag();
     }
     
-    private void shuffleBag() {
-        for(int i = bag.length - 1; i > 0; i--){
-            int j = (int) (Math.random() * (i + 1));
-            PieceKind temp = bag[i];
-            bag[i] = bag[j];
-            bag[j] = temp;
+    // Refill the bag with all PieceKinds and shuffle using Fisher–Yates.
+    private void refillBag() {
+        bag = new ArrayList<>();
+        for (PieceKind kind : PieceKind.values()) {
+            bag.add(kind);
         }
+        for (int i = bag.size() - 1; i > 0; i--) {
+            int j = random.nextInt(i + 1);
+            PieceKind temp = bag.get(i);
+            bag.set(i, bag.get(j));
+            bag.set(j, temp);
+        }
+        index = 0;
     }
+    
+    // Returns the next PieceKind from the bag.
     public PieceKind getNextPieceKind() {
-        PieceKind next = bag[currentIndex];
-        currentIndex++;
-        if (currentIndex >= bag.length) {
-            shuffleBag();
-            currentIndex = 0;
+        if (index >= bag.size()) {
+            refillBag();
         }
-        return next;
+        return bag.get(index++);
     }
 }

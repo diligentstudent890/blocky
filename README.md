@@ -15,7 +15,19 @@ Primary developer: _(Brian He)_
 ## Changelog
 
 ~~~console
-commit 315be144cf68c98351743cec353920f0789e95d3 (HEAD -> main)
+commit f816fc10852587fd9bd10892ebaa8b1de0720128 (HEAD -> main)
+Author: Brian He <brianhe@Brians-MacBook-Air.local>
+Date:   Wed Feb 12 19:13:57 2025 -0600
+
+    Corrected row shifting in deleteRow()
+
+commit 0056c0a13aba7140eed46e08b20b7ab91388b7cf
+Author: Brian He <brianhe@Brians-MacBook-Air.local>
+Date:   Wed Feb 12 14:26:47 2025 -0600
+
+    Updated getCompletedRows() to return row indices instead of row arrays
+
+commit 315be144cf68c98351743cec353920f0789e95d3
 Author: Brian He <brianhe@Brians-MacBook-Air.local>
 Date:   Wed Feb 12 02:45:28 2025 -0600
 
@@ -50,4 +62,5 @@ Author: Peter-Michael Osera <osera@cs.grinnell.edu>
 Date:   Wed Feb 5 09:13:20 2025 -0600
 
     initial commit
+
 ~~~

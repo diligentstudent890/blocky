@@ -1,45 +1,37 @@
 package com.gamewerks.blocky.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Scanner;
-
-import com.gamewerks.blocky.engine.PieceKind;
+import com.gamewerks.blocky.engine.BlockyGame;
+import com.gamewerks.blocky.gfx.BlockyPanel;
+import java.awt.Rectangle;
+import javax.swing.JFrame;
 
 public class Loader {
-    private static boolean[][] readRotation(Scanner in) {
-        boolean[][] rotation = new boolean[4][4];
-        for (int row = 3; row >= 0; row--) {
-            String line = in.nextLine();
-            for (int col = 0; col < 4; col++) {
-                rotation[row][col] = line.charAt(col) == 'x';
+    private static final int FPS = 10;
+    private static final double SPF = 1000000000.0 / FPS;
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Blocky Tetris");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        BlockyGame game = new BlockyGame();
+        BlockyPanel panel = new BlockyPanel(game);
+        frame.add(panel);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+
+        // Main game loop (runs on the main thread)
+        long timeElapsed = 0;
+        long prevTime = System.nanoTime();
+        while (true) {
+            long currentTime = System.nanoTime();
+            timeElapsed += currentTime - prevTime;
+            prevTime = currentTime;
+            if (timeElapsed > SPF) {
+                game.step();
+                panel.paintImmediately(new Rectangle(0, 0, panel.getWidth(), panel.getHeight()));
+                timeElapsed -= SPF;
             }
         }
-        return rotation;
-    }
-    
-    
-    public static boolean[][][] loadRotationData(PieceKind piece) throws IOException {
-        boolean[][][] data = new boolean[4][][];
-        File file = new File(Constants.DATA_PATH, piece.toString() + ".data");
-        Scanner in = new Scanner(file);
-        for (int i = 0; i < 4; i++) {
-            data[i] = readRotation(in);
-            if (in.hasNextLine()) {
-                in.nextLine();
-            }
-        }
-        in.close();
-        return data;
-    }
-    
-    public static HashMap loadAllRotationData() throws IOException {
-        HashMap ret = new HashMap();
-        for (int i = 0; i < PieceKind.ALL.length; i++) {
-            PieceKind piece = PieceKind.ALL[i];
-            ret.put(piece, loadRotationData(piece));
-        }
-        return ret;
     }
 }

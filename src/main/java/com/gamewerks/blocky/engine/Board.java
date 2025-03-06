@@ -1,35 +1,38 @@
 package com.gamewerks.blocky.engine;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import com.gamewerks.blocky.util.Constants;
 import com.gamewerks.blocky.util.Position;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Board {
-    private boolean[][] well;
+    private int[][] grid;
     
     public Board() {
-        well = new boolean[Constants.BOARD_HEIGHT][Constants.BOARD_WIDTH];
+        grid = new int[Constants.BOARD_HEIGHT][Constants.BOARD_WIDTH];
     }
     
-    public boolean isValidPosition(int row, int col) {
-        return row >= 0 && row <= well.length && col >= 0 && col < well[0].length;
+    // Checks collision.
+    public boolean collides(Piece piece) {
+        return collides(piece.getLayout(), piece.getPosition());
     }
     
-    public boolean collides(Piece p) {
-        return collides(p.getLayout(), p.getPosition());
-    }
-    
-    public boolean collides(boolean[][] layout, Position pos) {
-        for (int row = 0; row < layout.length; row++) {
-            int wellRow = pos.row - row;
-            for (int col = 0; col < layout[row].length; col++) {
-                int wellCol = col + pos.col;
-                if (layout[row][col]) {
-                    if (!isValidPosition(wellRow, wellCol)) {
+    // Checks collision for a given layout placed at the given position.
+    public boolean collides(int[][] layout, Position pos) {
+        int rows = layout.length;
+        int cols = layout[0].length;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (layout[i][j] != 0) {
+                    int boardRow = pos.getRow() + i;
+                    int boardCol = pos.getCol() + j;
+                    // Check board boundaries.
+                    if (boardRow < 0 || boardRow >= Constants.BOARD_HEIGHT || 
+                        boardCol < 0 || boardCol >= Constants.BOARD_WIDTH) {
                         return true;
-                    } else if (well[wellRow][wellCol]) {
+                    }
+                    // Check if cell is already occupied.
+                    if (grid[boardRow][boardCol] != 0) {
                         return true;
                     }
                 }
@@ -38,56 +41,66 @@ public class Board {
         return false;
     }
     
-    public void addToWell(Piece p) {
-        boolean[][] layout = p.getLayout();
-        Position pos = p.getPosition();
-        for (int row = 0; row < layout.length; row++) {
-            int wellRow = pos.row - row;
-            for (int col = 0; col < layout[row].length; col++) {
-                int wellCol = pos.col + col;
-                if (isValidPosition(wellRow, wellCol) && layout[row][col]) {
-                    well[wellRow][wellCol] = true;
+    // Adds the piece's layout into the grid (locking it in place).
+    public void addToWell(Piece piece) {
+        int[][] layout = piece.getLayout();
+        Position pos = piece.getPosition();
+        int rows = layout.length;
+        int cols = layout[0].length;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (layout[i][j] != 0) {
+                    int boardRow = pos.getRow() + i;
+                    int boardCol = pos.getCol() + j;
+                    if (boardRow >= 0 && boardRow < Constants.BOARD_HEIGHT &&
+                        boardCol >= 0 && boardCol < Constants.BOARD_WIDTH) {
+                        grid[boardRow][boardCol] = 1;
+                    }
                 }
             }
         }
     }
     
-    public void deleteRow(int n) {
-        for (int col = 0; col < Constants.BOARD_WIDTH; col++) {
-            well[n][col] = false;
-        }
-        for (int row = 0; row < n - 1; row++) {
-            for (int col = 0; col < Constants.BOARD_WIDTH; col++) {
-                well[row][col] = well[row + 1][col];
+    // Returns an array of row indices that are completely filled.
+    public int[] getCompletedRows() {
+        List<Integer> completeRows = new ArrayList<>();
+        for (int i = 0; i < Constants.BOARD_HEIGHT; i++) {
+            boolean complete = true;
+            for (int j = 0; j < Constants.BOARD_WIDTH; j++) {
+                if (grid[i][j] == 0) {
+                    complete = false;
+                    break;
+                }
+            }
+            if (complete) {
+                completeRows.add(i);
             }
         }
-        
+        int[] rows = new int[completeRows.size()];
+        for (int i = 0; i < completeRows.size(); i++) {
+            rows[i] = completeRows.get(i);
+        }
+        return rows;
     }
     
-    public void deleteRows(List rows) {
-        for (int i = 0; i < rows.size(); i++) {
-            int row = (Integer) rows.get(i);
-            deleteRow(row);
+    // Deletes the given rows and shifts the above rows downward.
+    public void deleteRows(int[] rowsToDelete) {
+        for (int row : rowsToDelete) {
+            for (int i = row; i > 0; i--) {
+                grid[i] = grid[i - 1].clone();
+            }
+            grid[0] = new int[Constants.BOARD_WIDTH];
         }
     }
     
-    public boolean isCompletedRow(int row) {
-        boolean isCompleted = true;
-        for (int col = 0; col < Constants.BOARD_WIDTH; col++) {
-            isCompleted = isCompleted && well[row][col];
-        }
-        return isCompleted;
-    }
-    
-    public List getCompletedRows() {
-        List <Integer> completedRows = new LinkedList();
-        for (int row = 0; row < Constants.BOARD_HEIGHT; row++) {
-            if (isCompletedRow(row)) {
-                completedRows.add(row);
+    // Returns the current well as a boolean grid for rendering.
+    public boolean[][] getWell() {
+        boolean[][] well = new boolean[Constants.BOARD_HEIGHT][Constants.BOARD_WIDTH];
+        for (int i = 0; i < Constants.BOARD_HEIGHT; i++) {
+            for (int j = 0; j < Constants.BOARD_WIDTH; j++) {
+                well[i][j] = (grid[i][j] != 0);
             }
         }
-        return completedRows;
+        return well;
     }
-    
-    public boolean[][] getWell() { return well; }
 }
